@@ -9,6 +9,7 @@ class TweetAdmin(admin.ModelAdmin):
         "__str__",
         "user",
         "payload",
+        "total_likes",
     )
 
 
