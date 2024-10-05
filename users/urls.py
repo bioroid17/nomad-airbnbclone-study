@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import get_user_tweets
+from .views import UserTweets
 
 urlpatterns = [
-    path("<int:id>/tweets", get_user_tweets),
+    path("<int:id>/tweets", UserTweets.as_view()),
 ]
