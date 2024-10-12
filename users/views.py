@@ -8,6 +8,8 @@ from tweets.models import Tweet
 from tweets.serializers import TweetSerializer
 from .serializers import TinyUserSerializer, UserDetailSerializer
 from .models import User
+import jwt
+from django.conf import settings
 
 
 class Users(APIView):
@@ -122,3 +124,28 @@ class LogOut(APIView):
     def post(self, request):
         logout(request)
         return Response({"ok": "Bye!"})
+
+
+class JWTLogin(APIView):
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            raise ParseError
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+
+        if user:
+            token = jwt.encode(
+                {"pk": user.pk},
+                settings.SECRET_KEY,
+                algorithm="HS256",
+            )
+            return Response({"token": token})
+        else:
+            return Response({"error": "Wrong password"})

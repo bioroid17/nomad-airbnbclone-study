@@ -59,6 +59,17 @@ class TestTweets(APITestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+        response = self.client.post(
+            self.URL,
+            headers={
+                "X-USERNAME": self.user.username,
+            },
+            data={
+                "payload": new_tweet_payload,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
         self.client.force_login(self.user)
         response = self.client.post(
             self.URL,

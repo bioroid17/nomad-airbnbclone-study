@@ -207,3 +207,25 @@ class TestUser(APITestCase):
         self.client.force_login(self.user)
         response = self.client.post("/api/v1/users/logout")
         self.assertEqual(response.status_code, 200)
+
+    def test_jwt(self):
+        response = self.client.post(
+            "/api/v1/users/jwt-login",
+            data={
+                "username": self.USERNAME,
+                "password": self.PASSWORD,
+            },
+        )
+        data = response.json()
+        self.assertIn("token", data)
+
+        response = self.client.post(
+            "/api/v1/tweets/",
+            headers={
+                "jwt": data["token"],
+            },
+            data={
+                "payload": "From JWT",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
